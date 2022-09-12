@@ -1,0 +1,57 @@
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.16.0;
+
+abstract contract Context {
+
+    function _msgSender() internal view virtual returns (address) 
+    {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) 
+    {
+        return msg.data;
+    }
+}
+
+ 
+
+abstract contract Ownable is Context {
+
+    address public  _owner;
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    constructor() 
+    {
+        _transferOwnership(_msgSender());
+    }
+
+    modifier onlyOwner() 
+    {
+        _checkOwner();
+        _;
+    }
+
+    function getowner() public view virtual returns (address) 
+    {
+        return _owner;
+    }
+
+    function _checkOwner() internal view virtual 
+    {
+        require(getowner() == _msgSender(), "Ownable: caller is not the owner");
+    }
+
+    function transferOwnership(address newOwner) public virtual onlyOwner 
+    {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    function _transferOwnership(address newOwner) internal virtual 
+    {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
